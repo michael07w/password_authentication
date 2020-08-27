@@ -2,6 +2,7 @@ import hashlib
 import sqlite3
 from sqlite3 import Error
 from getpass import getpass
+from setup_db import create_connection
 
 def check_username(username):
     """Checks if username exists.
@@ -58,28 +59,6 @@ def get_password_hash():
     password_hashed = hashlib.sha256(password_bytestr).hexdigest()
 
     return password_hashed
-
-
-
-def create_connection(db_file):
-    """Create connection to SQLite database.
-
-    Args:
-        db_file (str): Name of database to connect to.
-
-    Returns:
-        Connection object: Connection to SQLite database.
-    """
-    conn = None
-
-    try:
-        # create database file or connect to existing
-        conn = sqlite3.connect(db_file)
-        return conn
-    except Error as e:
-        print(e)
-
-    return conn
 
 
 
