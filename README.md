@@ -1,3 +1,3 @@
 # password_authentication
 
-Project in progress to create/update database of user credentials.
+Solution in progress to Robert Heaton's proposed project: https://robertheaton.com/2019/08/12/programming-projects-for-advanced-beginners-user-logins/
