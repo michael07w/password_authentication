@@ -1,3 +1,4 @@
+import configparser
 import os.path
 import sqlite3
 from os import path
@@ -89,6 +90,20 @@ def delete_table(conn):
         cur.execute("DROP TABLE users;")
     except Error as e:
         print(e)
+
+
+
+def read_db():
+    """Returns name of database to use.
+
+    Returns:
+        (str): Name of the database to use.
+    """
+    # read config file
+    config = configparser.ConfigParser()
+    config.read_file(open("options.cfg"))
+
+    return config['DEFAULT']['DatabaseFilename']
 
 
 
