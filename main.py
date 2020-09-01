@@ -1,40 +1,45 @@
 import hashlib
 import json
+import setup_db
+from getpass import getpass
 
 def main():
-    # read config file with creds
-    with open("creds.json") as f:
-        creds = json.load(f)
-
-    # organize user creds into dict where key,value is username,password
-    user_creds = {}
-    for user in creds:
-        uname = user["username"]
-        pwd = user["password"].encode("utf-8")
-        user_creds[uname] = hashlib.sha256(pwd).hexdigest()
+    # get database name from options.cfg
+    db_name = setup_db.read_db()
 
     # get username/password from user
     username = input("Please enter username: ")
-    password = input("Please enter password: ")
+    password = getpass("Please enter password: ")
 
-    if is_valid_credentials(username, password, user_creds):
-        print("My deepest darkest secret!")
+    # validate credentials
+    if is_valid_credentials(username, password, db_name):
+        print("Congrats, you've logged in!")
 
 
 
 # Checks user-entered credentials against the dict of possible creds
-def is_valid_credentials(uname, pwd, creds):
+def is_valid_credentials(uname, pwd, db_name):
     # Hash password entered by user
     pwd_bytestr = pwd.encode("utf-8")
     pwd_hashed = hashlib.sha256(pwd_bytestr).hexdigest()
 
-    # validate credentials
-    if uname not in creds:
+    # validate credentials in database
+    conn = setup_db.create_connection(db_name)
+    cur = conn.cursor()
+    cur.execute("SELECT COUNT(1) FROM users WHERE username = (?)", (uname,))
+    result_username = cur.fetchone()
+    if result_username[0] == 0:
         print("Get Lost")
         return False
-    elif pwd_hashed != creds.get(uname):
-        print("Get Lost")
-        return False
+    else:
+        # validate password
+        cur.execute("SELECT password_hash FROM users WHERE username = (?)", (uname,))
+        result_hash = cur.fetchone()
+        if pwd_hashed != result_hash[0]:
+            print("Get Lost")
+            return False
+
+    conn.close()
 
     return True
 
