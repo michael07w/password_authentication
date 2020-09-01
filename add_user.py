@@ -82,7 +82,7 @@ def save_user(login_creds):
 
 
 
-def main():
+def add_user():
     # get username/password hash
     username = get_username()
     password_hash = get_password_hash()
@@ -90,8 +90,3 @@ def main():
 
     # save user to database
     save_user(credentials)
-
-
-
-if __name__ == '__main__':
-    main()

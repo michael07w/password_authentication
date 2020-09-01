@@ -108,7 +108,7 @@ def read_db():
 
 
 def main():
-    database_name = 'ppab6.db'
+    database_name = read_db()
 
     sql_create_users_table = """CREATE TABLE IF NOT EXISTS users (
                                     username VARCHAR, password_hash VARCHAR

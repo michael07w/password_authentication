@@ -1,9 +1,12 @@
 import hashlib
 import json
+import add_user
 import setup_db
 from getpass import getpass
 
-def main():
+def login():
+    """Prompts user for login credentials, then checks against database of valid creds.
+    """
     # get database name from options.cfg
     db_name = setup_db.read_db()
 
@@ -17,8 +20,18 @@ def main():
 
 
 
-# Checks user-entered credentials against the dict of possible creds
+#
 def is_valid_credentials(uname, pwd, db_name):
+    """Checks user-entered credentials against database of user creds.
+
+    Args:
+        uname (str): Username entered by user.
+        pwd (str): Password entered by user.
+        db_name(str): Name of database file that stores valid user creds.
+
+    Returns:
+        (bool): True if both username and password are valid.
+    """
     # Hash password entered by user
     pwd_bytestr = pwd.encode("utf-8")
     pwd_hashed = hashlib.sha256(pwd_bytestr).hexdigest()
@@ -42,6 +55,36 @@ def is_valid_credentials(uname, pwd, db_name):
     conn.close()
 
     return True
+
+
+
+def get_choice():
+    """Returns user's choice to login, add a user, or exit.
+
+    Returns:
+        (str): User's selection.
+    """
+    choice = input("""Please make a selection (1, 2, or 3):
+    1) Login
+    2) Add User
+    3) Exit
+    """)
+
+    return choice
+
+
+
+def main():
+    choice = get_choice()
+
+    while choice != '3':
+        if choice == '1':
+            login()
+        elif choice == '2':
+            add_user.add_user()
+        choice = get_choice()
+
+    exit(1)
 
 
 
